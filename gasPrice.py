@@ -12,14 +12,10 @@ def getWebsite():
     # Making a GET request
     r = requests.get(URL)
     
-    # check status code for response received
-    # success code - 200
-    # print(r)
-    
     # print content of request
-    # print(r.content)
-    with open("GasWizard.html","w") as f:
-        f.write(r.content.decode('utf-8'))
+    if ((r.status_code == 200) and (False)):
+        with open("GasWizard.html","w") as f:
+            f.write(r.content.decode('utf-8'))
 
     return (r.status_code,r.content)
 
@@ -49,6 +45,20 @@ def parseContent(content, city):
 
     return(date_string[0], direction, amount, price.replace(" ",""))
 
+def lastCheck(date_string):
+    try:
+        with open("lastCheck.txt","r") as f:
+            content = f.read()
+    except:
+        return (True)
+    
+    if content != date_string:
+        with open("lastCheck.txt","w") as f:
+            f.write(date_string)
+        return (True)
+    else:
+        return (False)
+
 if __name__ == "__main__":
     status, content = getWebsite()
 
@@ -56,8 +66,11 @@ if __name__ == "__main__":
         city = "Toronto"
         date_string, direction, amount, price = parseContent(content, city)
 
-        print(city + " - " +date_string)
-        if direction == "NOT CHANGE":
-            print("Gas will NOT CHANGE and stay at " + price + "¢/L")
-        else:
-            print("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L")
+        same = lastCheck(date_string)
+
+        if same:
+            print(city + " - " +date_string)
+            if direction == "NOT CHANGE":
+                print("Gas will NOT CHANGE and stay at " + price + "¢/L")
+            else:
+                print("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L")
