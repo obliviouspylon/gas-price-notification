@@ -1,0 +1,22 @@
+{
+  "name": "gas-price-notification",
+  "version": "1.0.0",
+  "description": "Gas Price Notification",
+  "main": "gasPrice.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obliviouspylon/gas-price-notification.git"
+  },
+  "author": "James Luo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/obliviouspylon/gas-price-notification/issues"
+  },
+  "homepage": "https://github.com/obliviouspylon/gas-price-notification#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
