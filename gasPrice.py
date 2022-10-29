@@ -39,7 +39,7 @@ def parseContent(content, city):
         direction = 'go UP'
     elif 'pd-nc' in change.attrs['class']:
         direction = "NOT CHANGE"
-    elif 'pd-dn' in change.attrs['class']:
+    elif 'pd-down' in change.attrs['class']:
         direction = "go DOWN"
     amount = change.text
 
