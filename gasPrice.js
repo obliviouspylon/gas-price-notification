@@ -30,18 +30,17 @@ function main(city) {
             } else if (cityInfo.next().html().includes("pd-down")) {
                 direction = "go DOWN"
             }
-            console.log(date_string)
+            
+            let message = date_string
             if (direction === "NOT CHANGE") {
-                console.log("Gas will NOT CHANGE and stay at " + price + "¢/L");
+                message = message + "\nGas will NOT CHANGE and stay at " + price + "¢/L"
+                console.log(message);
             } else {
-                console.log("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L");
+                message = message + "\nGas will " + direction + " by " + amount + "¢ to " + price + "¢/L"
+                console.log(message);
             };
         });
     });
 }
 
 main("Toronto");
-
-// console.log(date_string)
-// console.log("Gas will NOT CHANGE and stay at " + price + "¢/L");
-// console.log("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L");
