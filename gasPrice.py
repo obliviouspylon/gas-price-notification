@@ -59,6 +59,23 @@ def lastCheck(date_string):
     else:
         return (False)
 
+def getPrediction():
+    status, content = getWebsite()
+
+    if status == 200:
+        city = "Toronto"
+        date_string, direction, amount, price = parseContent(content, city)
+
+        # same = lastCheck(date_string)
+        same = True
+        if same:
+            message = city + " - " +date_string
+            if direction == "NOT CHANGE":
+                message = message + "\nGas will NOT CHANGE and stay at " + price + "¢/L"
+            else:
+                message = message + "\nGas will " + direction + " by " + amount + "¢ to " + price + "¢/L"
+            return message
+
 if __name__ == "__main__":
     status, content = getWebsite()
 
