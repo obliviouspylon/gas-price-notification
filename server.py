@@ -15,5 +15,7 @@ def gasPrediction():
     return(message)
 
 if __name__ == '__main__':
+    print("Starting Flask Server...")
+    print("Port: " + str(port))
     serve(app,host = "localhost", port = port)
     # app.run(host="localhost", port=port)
