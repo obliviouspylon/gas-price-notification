@@ -6,7 +6,9 @@ import gasPrice
 app = Flask(__name__)
 CORS(app)
 
+# config
 port = 9000
+listenOn = "0.0.0.0"
 
 
 @app.route('/')
@@ -16,6 +18,6 @@ def gasPrediction():
 
 if __name__ == '__main__':
     print("Starting Flask Server...")
-    print("Port: " + str(port))
-    serve(app,host = "localhost", port = port)
-    # app.run(host="localhost", port=port)
+    print("Listening on " + listenOn + ":" + str(port))
+    serve(app,host = listenOn, port = port)
+#    app.run(host=listenOn, port=port)
