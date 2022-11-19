@@ -17,6 +17,10 @@ scheduler.init_app(app)
 port = 9000
 listenOn = "0.0.0.0"
 
+# @scheduler.task('interval', id='do_test', seconds=5, misfire_grace_time=900)
+# def test():
+#     print(datetime.datetime.now())
+
 @scheduler.task('interval', id='do_test', minutes=60, misfire_grace_time=900)
 def getGasPrediction():
     result = gasWizard.getPrediction()
