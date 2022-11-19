@@ -2,11 +2,13 @@
 # Part of code from
 # https://www.geeksforgeeks.org/python-web-scraping-tutorial/
 
+import datetime
 import requests
 from bs4 import BeautifulSoup
 import re
 
 URL = "https://gaswizard.ca/gas-price-predictions/"
+# Price Prediction for Saturday 19th of November 2022
 
 def getWebsite():
     # Making a GET request
@@ -18,7 +20,6 @@ def getWebsite():
             f.write(r.content.decode('utf-8'))
 
     return (r.status_code,r.content)
-
 
 def parseContent(content, city):
     soup = BeautifulSoup(content, 'html.parser')
@@ -36,11 +37,11 @@ def parseContent(content, city):
 
     price, change = list(cityGasInfo[1].children)
     if 'pd-up' in change.attrs['class']:
-        direction = 'go UP'
+        direction = 'UP'
     elif 'pd-nc' in change.attrs['class']:
-        direction = "NOT CHANGE"
+        direction = "STAYS"
     elif 'pd-down' in change.attrs['class']:
-        direction = "go DOWN"
+        direction = "DOWN"
     amount = change.text
 
     return(date_string[0], direction, amount, price.replace(" ",""))
@@ -59,6 +60,15 @@ def lastCheck(date_string):
     else:
         return (False)
 
+def ord(n):
+    return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
+
+def tomrorowDate():
+    today = datetime.datetime.now()
+    tomrorow = today + datetime.timedelta(days=1)
+    return (ord(tomrorow.day) + tomrorow.strftime(" of %B %Y"))
+# 19th of November 2022
+
 def getPrediction():
     status, content = getWebsite()
 
@@ -66,15 +76,24 @@ def getPrediction():
         city = "Toronto"
         date_string, direction, amount, price = parseContent(content, city)
 
-        # same = lastCheck(date_string)
-        same = True
-        if same:
-            message = city + " - " +date_string
-            if direction == "NOT CHANGE":
-                message = message + "\nGas will NOT CHANGE and stay at " + price + "¢/L"
-            else:
-                message = message + "\nGas will " + direction + " by " + amount + "¢ to " + price + "¢/L"
-            return message
+        tomorrow = tomrorowDate()
+
+        if tomorrow in date_string:
+            amount = re.findall("\d+",amount)[0]
+            return (True,[direction, amount, price])
+        else:
+            return(False,[])
+
+        # same = True
+        # if same:
+        #     message = city + " - " +date_string
+        #     if direction == "NOT CHANGE":
+        #         message = message + "\nGas will NOT CHANGE and stay at " + price + "¢/L"
+        #     else:
+        #         message = message + "\nGas will " + direction + " by " + amount + "¢ to " + price + "¢/L"
+        #     return message
+    else:
+        return((False,[]))
 
 if __name__ == "__main__":
     status, content = getWebsite()
