@@ -9,11 +9,15 @@ import jsonController
 
 app = Flask(__name__)
 CORS(app)
+scheduler = APScheduler()
+scheduler.api_enabled = True
+scheduler.init_app(app)
 
 # config
 port = 9000
 listenOn = "0.0.0.0"
 
+@scheduler.task('interval', id='do_test', minutes=60, misfire_grace_time=900)
 def getGasPrediction():
     result = gasWizard.getPrediction()
     if result[0]:
@@ -44,6 +48,7 @@ def sendPrediction():
         message = "Gas Prediction - " + tomorrowDate.strftime("%b %d") + "\n" + message
         return(message[:-1])
 
+scheduler.start()
 if __name__ == '__main__':
     # print(sendPrediction())
     print("Starting Flask Server...")
