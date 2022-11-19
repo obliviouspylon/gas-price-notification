@@ -1,0 +1,93 @@
+
+# Part of code from
+# https://www.geeksforgeeks.org/python-web-scraping-tutorial/
+
+import datetime
+import sys
+import re
+sys.path.append('driver')
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+URL = "https://toronto.citynews.ca/toronto-gta-gas-prices/"
+
+def getContent():
+    fireFoxOptions = webdriver.FirefoxOptions()
+    fireFoxOptions.headless = True
+    browser = webdriver.Firefox(options=fireFoxOptions)
+    browser.implicitly_wait(5)
+    browser.get(URL)
+    try:
+        prediction = browser.find_element(By.CLASS_NAME,"float-box").text
+    except:
+        prediction = ""
+    browser.quit()
+
+    return (prediction)
+
+def tomrorowDate():
+    today = datetime.datetime.now()
+    tomrorow = today + datetime.timedelta(days=1)
+    return (tomrorow.strftime("%B %d, %Y"))
+
+def parseContent(prediction):
+
+    if 'no change' in prediction: # No Change
+        direction = "STAYS"
+        amount = 0
+    else:
+        # '1 cent(s)\nEn-Pro tells CityNews that prices are expected to fall 1 cent(s) at 12:01am on November 18, 2022 to an average of 157.9 cent(s)/litre at most GTA stations.'
+        if 'rise' in prediction:
+            direction = 'UP'
+        elif 'fall' in prediction:
+            direction = "DOWN"
+        
+        centSplit = prediction.split("cent(s)")
+        amount = centSplit[0].strip()
+
+    price = re.findall("(?<=average of).*(?=cent)",prediction)[0].replace(" ","")
+    return(direction, amount, price)
+
+def lastCheck(date_string):
+    try:
+        with open("lastCheck.txt","r") as f:
+            content = f.read()
+    except:
+        return (True)
+    
+    if content != date_string:
+        with open("lastCheck.txt","w") as f:
+            f.write(date_string)
+        return (True)
+    else:
+        return (False)
+
+def getPrediction():
+    prediction = getContent()
+    
+    tomorrow = tomrorowDate()
+    if tomorrow in prediction:
+        direction, amount, price = parseContent(prediction)
+        return (True, [direction, amount, price])
+    else:
+        return(False,[])
+
+if __name__ == "__main__":
+    print(getPrediction())
+    print()
+    # status, content = getWebsite()
+
+    # if status == 200:
+    #     city = "Toronto"
+    #     date_string, direction, amount, price = parseContent(content)
+
+    #     same = lastCheck(date_string)
+
+
+    #     if same:
+    #         print(city + " - " +date_string)
+    #         if direction == "NOT CHANGE":
+    #             print("Gas will NOT CHANGE and stay at " + price + "¢/L")
+    #         else:
+    #             print("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L")
