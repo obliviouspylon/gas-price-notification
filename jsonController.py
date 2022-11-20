@@ -15,6 +15,7 @@ def checkJson(readData = False):
             data.pop(today)
             write = True
     except:
+        print("Unable to open Data File")
         data = {}
         write = True
 
