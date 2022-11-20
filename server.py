@@ -77,5 +77,5 @@ if __name__ == '__main__':
     # print(sendPrediction())
     print("Starting Flask Server...")
     print("Listening on " + listenOn + ":" + str(args.port))
-    serve(app,host = listenOn, port = args.port)
+    serve(app,host = listenOn, port = int(args.port))
 #    app.run(host=listenOn, port=port)
