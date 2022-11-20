@@ -3,6 +3,7 @@
 # https://www.geeksforgeeks.org/python-web-scraping-tutorial/
 
 import datetime
+from pytz import timezone
 import sys
 import re
 from sys import platform
@@ -42,7 +43,7 @@ def getContent():
     return (prediction)
 
 def tomrorowDate():
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(timezone("EST"))
     tomrorow = today + datetime.timedelta(days=1)
     return (tomrorow.strftime("%B %d, %Y"))
 

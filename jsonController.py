@@ -1,11 +1,12 @@
 
 import json
 import datetime
+from pytz import timezone
 
 def checkJson(readData = False):
-    # today = datetime.datetime.now().strftime("%Y%m%d")
-    tomrorow = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%Y%m%d")
-    today = datetime.datetime.now().strftime("%Y%m%d")
+    # today = datetime.datetime.now(timezone("EST")).strftime("%Y%m%d")
+    tomrorow = (datetime.datetime.now(timezone("EST")) + datetime.timedelta(days=1)).strftime("%Y%m%d")
+    today = datetime.datetime.now(timezone("EST")).strftime("%Y%m%d")
 
     write = False
     try:

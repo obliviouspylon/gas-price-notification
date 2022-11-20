@@ -3,6 +3,7 @@
 # https://www.geeksforgeeks.org/python-web-scraping-tutorial/
 
 import datetime
+from pytz import timezone
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -64,7 +65,7 @@ def ord(n):
     return str(n)+("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
 
 def tomrorowDate():
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(timezone("EST"))
     tomrorow = today + datetime.timedelta(days=1)
     return (ord(tomrorow.day) + tomrorow.strftime(" of %B %Y"))
 # 19th of November 2022

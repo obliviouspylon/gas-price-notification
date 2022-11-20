@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_apscheduler import APScheduler # https://viniciuschiele.github.io/flask-apscheduler/rst/usage.html https://www.techcoil.com/blog/how-to-use-flask-apscheduler-in-your-python-3-flask-application-to-run-multiple-tasks-in-parallel-from-a-single-http-request/
 from waitress import serve
 import datetime
+from pytz import timezone
 import gasWizard
 import Enpro680
 import jsonController
@@ -23,10 +24,10 @@ listenOn = "0.0.0.0"
 
 # @scheduler.task('interval', id='do_test', seconds=5, misfire_grace_time=900)
 # def test():
-#     print(datetime.datetime.now())
+#     print(datetime.datetime.now(timezone("EST")))
 
 def hourisbetween(start, end):
-    now = datetime.datetime.now().hour
+    now = datetime.datetime.now(timezone("EST")).hour
     if (now >= start) and (now <= end):
         return True
     else:
@@ -36,7 +37,7 @@ def hourisbetween(start, end):
 # @scheduler.task('interval', id='do_test', seconds=5, misfire_grace_time=900)
 @app.route('/update')
 def getGasPrediction():
-    # print(datetime.datetime.now())
+    # print(datetime.datetime.now(timezone("EST")))
     force = request.args.get('force')
     if hourisbetween(9, 21) or force == "True":
         print("Updating Prediction")
