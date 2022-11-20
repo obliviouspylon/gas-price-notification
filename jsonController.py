@@ -5,14 +5,14 @@ import datetime
 def checkJson(readData = False):
     # today = datetime.datetime.now().strftime("%Y%m%d")
     tomrorow = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%Y%m%d")
-    yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    today = datetime.datetime.now().strftime("%Y%m%d")
 
     write = False
     try:
         with open("predictionData.json","r") as f:
             data = json.load(f)
-        if yesterday in data:
-            data.pop(yesterday)
+        if today in data:
+            data.pop(today)
             write = True
     except:
         data = {}
