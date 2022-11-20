@@ -6,7 +6,7 @@ SMS Notification on tomorrow's gas price based on Gas Wizard
 To start the Linus Service
 - Copy gas-price.service file at /etc/systemd/system/
 - run "sudo systemctl start gas-price"
-- check "with sudo systemctl status gas-price"
+- check with "sudo systemctl status gas-price"
 
 To install firefox without snap
 https://askubuntu.com/questions/1399383/how-to-install-firefox-as-a-traditional-deb-package-without-snap-in-ubuntu-22
