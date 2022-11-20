@@ -5,17 +5,31 @@
 import datetime
 import sys
 import re
+from sys import platform
 sys.path.append('./driver')
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
 
 URL = "https://toronto.citynews.ca/toronto-gta-gas-prices/"
 
 def getContent():
-    fireFoxOptions = webdriver.FirefoxOptions()
-    fireFoxOptions.headless = True
-    browser = webdriver.Firefox(options=fireFoxOptions)
+    if platform == "linux" or platform == "linux2":
+        # linux
+        options = Options()
+        options.add_argument('--headless')
+        browser = webdriver.Firefox(service=Service(GeckoDriverManager().install()),options=options)
+    elif platform == "win32":
+        # Windows...
+        fireFoxOptions = webdriver.FirefoxOptions()
+        fireFoxOptions.headless = True
+        browser = webdriver.Firefox(options=fireFoxOptions)
+    else:
+        return ("")
+    
     browser.implicitly_wait(5)
     browser.get(URL)
     try:
@@ -66,6 +80,9 @@ def lastCheck(date_string):
 def getPrediction():
     prediction = getContent()
     
+    if len(prediction) == 0:
+        return(False,[])
+
     tomorrow = tomrorowDate()
     if tomorrow in prediction:
         direction, amount, price = parseContent(prediction)
