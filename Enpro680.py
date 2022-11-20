@@ -23,7 +23,8 @@ def getContent():
         # https://askubuntu.com/questions/1399383/how-to-install-firefox-as-a-traditional-deb-package-without-snap-in-ubuntu-22
         options = Options()
         options.add_argument('--headless')
-        browser = webdriver.Firefox(service=Service(GeckoDriverManager().install()),options=options)
+        # browser = webdriver.Firefox(service=Service(GeckoDriverManager().install()),options=options)
+        browser = webdriver.Firefox(executable_path=GeckoDriverManager().install(),options=options)
     elif platform == "win32":
         # Windows...
         fireFoxOptions = webdriver.FirefoxOptions()
