@@ -44,3 +44,11 @@ def saveJson(website, direction, amount, price):
             json.dump(data, f, indent=4)
     except:
         pass
+
+def readJson():
+    try:
+        with open("predictionData.json","r") as f:
+            data = json.load(f)
+        return(data)
+    except:
+        return("Can't read json")
