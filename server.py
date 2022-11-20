@@ -21,14 +21,22 @@ listenOn = "0.0.0.0"
 # def test():
 #     print(datetime.datetime.now())
 
+def hourisbetween(start, end):
+    now = datetime.datetime.now().hour
+    if (now >= start) and (now <= end):
+        return True
+    else:
+        return False
+
 @scheduler.task('interval', id='do_test', minutes=60, misfire_grace_time=900)
 def getGasPrediction():
-    result = gasWizard.getPrediction()
-    if result[0]:
-        jsonController.saveJson("GasWizard",result[1][0],result[1][1],result[1][2])
-    result = Enpro680.getPrediction()
-    if result[0]:
-        jsonController.saveJson("EnPro",result[1][0],result[1][1],result[1][2])
+    if hourisbetween(9, 21):
+        result = gasWizard.getPrediction()
+        if result[0]:
+            jsonController.saveJson("GasWizard",result[1][0],result[1][1],result[1][2])
+        result = Enpro680.getPrediction()
+        if result[0]:
+            jsonController.saveJson("EnPro",result[1][0],result[1][1],result[1][2])
 
 @app.route('/')
 def sendPrediction():
