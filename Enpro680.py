@@ -5,7 +5,7 @@
 import datetime
 import sys
 import re
-sys.path.append('driver')
+sys.path.append('./driver')
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
