@@ -39,6 +39,7 @@ def getGasPrediction():
     # print(datetime.datetime.now())
     force = request.args.get('force')
     if hourisbetween(9, 21) or force == "True":
+        print("Updating Prediction")
         result = gasWizard.getPrediction()
         if result[0]:
             jsonController.saveJson("GasWizard",result[1][0],result[1][1],result[1][2])
@@ -50,6 +51,7 @@ def getGasPrediction():
 
 @app.route('/')
 def sendPrediction():
+    print("Sending Prediction")
     # message = gasWizard.getPrediction()
     data, tomorrow = jsonController.checkJson(readData=True)
     tomorrowDate = datetime.datetime.strptime(tomorrow, "%Y%m%d")
