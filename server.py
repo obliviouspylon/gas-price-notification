@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 from flask_cors import CORS
 from flask_apscheduler import APScheduler # https://viniciuschiele.github.io/flask-apscheduler/rst/usage.html https://www.techcoil.com/blog/how-to-use-flask-apscheduler-in-your-python-3-flask-application-to-run-multiple-tasks-in-parallel-from-a-single-http-request/
 from waitress import serve
@@ -6,6 +6,11 @@ import datetime
 import gasWizard
 import Enpro680
 import jsonController
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-p', default=9000, dest='port',
+                    help = 'Change Flask Port. Default 9000',)
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +19,6 @@ scheduler.api_enabled = True
 scheduler.init_app(app)
 
 # config
-port = 9000
 listenOn = "0.0.0.0"
 
 # @scheduler.task('interval', id='do_test', seconds=5, misfire_grace_time=900)
@@ -29,14 +33,20 @@ def hourisbetween(start, end):
         return False
 
 @scheduler.task('interval', id='do_test', minutes=60, misfire_grace_time=900)
+# @scheduler.task('interval', id='do_test', seconds=5, misfire_grace_time=900)
+@app.route('/update')
 def getGasPrediction():
-    if hourisbetween(9, 21):
+    # print(datetime.datetime.now())
+    force = request.args.get('force')
+    if hourisbetween(9, 21) or force == "True":
         result = gasWizard.getPrediction()
         if result[0]:
             jsonController.saveJson("GasWizard",result[1][0],result[1][1],result[1][2])
         result = Enpro680.getPrediction()
         if result[0]:
             jsonController.saveJson("EnPro",result[1][0],result[1][1],result[1][2])
+        return("Prediction Updated")
+    return("Prediction Not Updated")
 
 @app.route('/')
 def sendPrediction():
@@ -62,8 +72,10 @@ def sendPrediction():
 
 scheduler.start()
 if __name__ == '__main__':
+    args = parser.parse_args()
+
     # print(sendPrediction())
     print("Starting Flask Server...")
-    print("Listening on " + listenOn + ":" + str(port))
-    serve(app,host = listenOn, port = port)
+    print("Listening on " + listenOn + ":" + str(args.port))
+    serve(app,host = listenOn, port = args.port)
 #    app.run(host=listenOn, port=port)
