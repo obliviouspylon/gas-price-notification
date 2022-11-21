@@ -37,11 +37,11 @@ def parseContent(content, city):
             cityGasInfo.remove(value)
 
     price, change = list(cityGasInfo[1].children)
-    if 'pd-up' in change.attrs['class'].lower():
+    if 'pd-up' in change.attrs['class']:
         direction = 'UP'
-    elif 'pd-nc' in change.attrs['class'].lower():
+    elif 'pd-nc' in change.attrs['class']:
         direction = "STAYS"
-    elif 'pd-down' in change.attrs['class'].lower():
+    elif 'pd-down' in change.attrs['class']:
         direction = "DOWN"
     amount = change.text
 
