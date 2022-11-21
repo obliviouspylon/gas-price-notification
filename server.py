@@ -63,9 +63,9 @@ def sendPrediction():
         amount = str(data[tomorrow][site]["amount"])
         price = str(data[tomorrow][site]["price"])
         if direction == "STAYS":
-            message = message + site + ": " + direction + " at " + price + "\n"
+            message = message + site + ": " + direction + " at " + price + "¢/L\n"
         else:
-            message = message + site + ": " + direction + " by " + amount + " to " + price + "\n"
+            message = message + site + ": " + direction + " by " + amount + " to " + price + "¢/L\n"
 
     if message == "":
         return Response("No prediction found for " + tomorrowDate.strftime("%b %d"), status=201)

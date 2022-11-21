@@ -50,14 +50,14 @@ def tomrorowDate():
 
 def parseContent(prediction):
 
-    if 'no change' in prediction: # No Change
+    if 'no change' in prediction.lower(): # No Change
         direction = "STAYS"
         amount = 0
     else:
         # '1 cent(s)\nEn-Pro tells CityNews that prices are expected to fall 1 cent(s) at 12:01am on November 18, 2022 to an average of 157.9 cent(s)/litre at most GTA stations.'
-        if 'rise' in prediction:
+        if 'rise' in prediction.lower():
             direction = 'UP'
-        elif 'fall' in prediction:
+        elif 'fall' in prediction.lower():
             direction = "DOWN"
         
         centSplit = prediction.split("cent(s)")

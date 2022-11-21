@@ -37,11 +37,11 @@ def parseContent(content, city):
             cityGasInfo.remove(value)
 
     price, change = list(cityGasInfo[1].children)
-    if 'pd-up' in change.attrs['class']:
+    if 'pd-up' in change.attrs['class'].lower():
         direction = 'UP'
-    elif 'pd-nc' in change.attrs['class']:
+    elif 'pd-nc' in change.attrs['class'].lower():
         direction = "STAYS"
-    elif 'pd-down' in change.attrs['class']:
+    elif 'pd-down' in change.attrs['class'].lower():
         direction = "DOWN"
     amount = change.text
 
@@ -80,7 +80,10 @@ def getPrediction():
         tomorrow = tomrorowDate()
 
         if tomorrow in date_string:
-            amount = re.findall("\d+",amount)[0]
+            if direction == "STAYS":
+                amount = 0
+            else:
+                amount = re.findall("\d+",amount)[0]
             return (True,[direction, amount, price])
         else:
             return(False,[])
@@ -107,7 +110,7 @@ if __name__ == "__main__":
 
         if same:
             print(city + " - " +date_string)
-            if direction == "NOT CHANGE":
-                print("Gas will NOT CHANGE and stay at " + price + "¢/L")
+            if direction == "STAYS":
+                print("Gas will STAY at " + price + "¢/L")
             else:
                 print("Gas will " + direction + " by " + amount + "¢ to " + price + "¢/L")
