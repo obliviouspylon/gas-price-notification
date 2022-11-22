@@ -38,7 +38,10 @@ def hourisbetween(start, end):
 @app.route('/update')
 def getGasPrediction():
     # print(datetime.datetime.now(timezone("EST")))
-    force = request.args.get('force')
+    try:
+        force = request.args.get('force')
+    except:
+        force = "False"
     if hourisbetween(9, 21) or force == "True":
         print("Updating Prediction")
         result = gasWizard.getPrediction()
