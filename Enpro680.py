@@ -46,7 +46,7 @@ def getContent():
 def tomrorowDate():
     today = datetime.datetime.now(timezone("EST"))
     tomrorow = today + datetime.timedelta(days=1)
-    return (tomrorow.strftime("%B %d, %Y"))
+    return (tomrorow.strftime("%B ") + tomrorow.strftime("%d, %Y").lstrip("0"))
 
 def parseContent(prediction):
 
