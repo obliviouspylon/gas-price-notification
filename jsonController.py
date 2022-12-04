@@ -69,8 +69,10 @@ def addUser(number):
     except:
         print("Unable to open Data File")
         data = {}
-
-    data[number] = True
+    try:
+        data[number] = True
+    except:
+        return False
 
     try:
         with open("gasUsers.json","w") as f:
@@ -103,8 +105,10 @@ def deleteUser(number):
     except:
         print("Unable to open Data File")
         data = {}
-
-    data.pop(number)
+    try:
+        data.pop(number)
+    except:
+        return False
 
     try:
         with open("gasUsers.json","w") as f:
