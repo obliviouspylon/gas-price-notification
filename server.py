@@ -46,10 +46,10 @@ def getGasPrediction():
         print("Updating Prediction")
         result = gasWizard.getPrediction()
         if result[0]:
-            jsonController.saveJson("GasWizard",result[1][0],result[1][1],result[1][2])
+            jsonController.savePrediction("GasWizard",result[1][0],result[1][1],result[1][2])
         result = Enpro680.getPrediction()
         if result[0]:
-            jsonController.saveJson("EnPro",result[1][0],result[1][1],result[1][2])
+            jsonController.savePrediction("EnPro",result[1][0],result[1][1],result[1][2])
         return("Prediction Updated")
     return("Prediction Not Updated")
 
@@ -57,7 +57,7 @@ def getGasPrediction():
 def sendPrediction():
     print("Sending Prediction")
     # message = gasWizard.getPrediction()
-    data, tomorrow = jsonController.checkJson(readData=True)
+    data, tomorrow = jsonController.checkPrediction(readData=True)
     tomorrowDate = datetime.datetime.strptime(tomorrow, "%Y%m%d")
     message = ""
 
