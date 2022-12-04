@@ -79,20 +79,24 @@ def addUser(number):
     except:
         return False
 
-def readUsers():
+def readUsers(jsonForm = False):
     try:
         with open("gasUsers.json","r") as f:
             data = json.load(f)
     except:
         print("Unable to open Data File")
         data = {}
-    return data
+
+    if jsonForm:
+        return data
+    else:
+        return list(data.keys)
 
 def deleteUser(number):
 
     if badNumber(number):
         return False
-        
+
     try:
         with open("gasUsers.json","r") as f:
             data = json.load(f)
