@@ -53,7 +53,16 @@ def readPrediction():
     except:
         return("Can't read json")
 
+def badNumber(number):
+    if len(number) != 10:
+        return True
+    return False
+
 def addUser(number):
+
+    if badNumber(number):
+        return False
+        
     try:
         with open("gasUsers.json","r") as f:
             data = json.load(f)
@@ -80,6 +89,10 @@ def readUsers():
     return data
 
 def deleteUser(number):
+
+    if badNumber(number):
+        return False
+        
     try:
         with open("gasUsers.json","r") as f:
             data = json.load(f)
