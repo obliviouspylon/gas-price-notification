@@ -52,3 +52,46 @@ def readPrediction():
         return(data)
     except:
         return("Can't read json")
+
+def addUser(number):
+    try:
+        with open("gasUsers.json","r") as f:
+            data = json.load(f)
+    except:
+        print("Unable to open Data File")
+        data = {}
+
+    data[number] = True
+
+    try:
+        with open("gasUsers.json","w") as f:
+            json.dump(data, f, indent=4)
+        return True
+    except:
+        return False
+
+def readUsers():
+    try:
+        with open("gasUsers.json","r") as f:
+            data = json.load(f)
+    except:
+        print("Unable to open Data File")
+        data = {}
+    return data
+
+def deleteUser(number):
+    try:
+        with open("gasUsers.json","r") as f:
+            data = json.load(f)
+    except:
+        print("Unable to open Data File")
+        data = {}
+
+    data.pop(number)
+
+    try:
+        with open("gasUsers.json","w") as f:
+            json.dump(data, f, indent=4)
+        return True
+    except:
+        return False
