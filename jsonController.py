@@ -45,7 +45,7 @@ def savePrediction(website, direction, amount, price):
     except:
         pass
 
-def readJson():
+def readPrediction():
     try:
         with open("predictionData.json","r") as f:
             data = json.load(f)
