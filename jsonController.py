@@ -90,7 +90,7 @@ def readUsers(jsonForm = False):
     if jsonForm:
         return data
     else:
-        return list(data.keys)
+        return (list(data.keys()))
 
 def deleteUser(number):
 
