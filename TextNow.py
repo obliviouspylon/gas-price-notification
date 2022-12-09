@@ -15,3 +15,4 @@ if __name__ == "__main__":
     tn_sid = os.getenv('TEXTNOW_SID')
     tn_csrf = os.getenv('TEXTNOW_CSRF')
     send_sms("4165707278","HeyThere", tn_username, tn_sid, tn_csrf)
+    print("SMS Sent")
