@@ -3,16 +3,14 @@ import os
 import json
 import requests
 
-phone_number_id = os.getenv('WHATSAPP_PHONE_NUMBER_ID') # Phone number ID provided
-access_token = os.getenv('WHATSAPP_ACCESS_TOKEN') # Your temporary access token
+def sendGasMessage(recipient_phone_number, phone_number_id, access_token, date, Enpro_direction, Enpro_amount, Enpro_price, GasWizard_direction, GasWizard_amount, GasWizard_price):
 
-url = f"https://graph.facebook.com/v15.0/{phone_number_id}/messages"
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    'Content-Type': 'application/json'
+    url = f"https://graph.facebook.com/v15.0/{phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        'Content-Type': 'application/json'
 }
 
-def sendGasMessage(recipient_phone_number, date, Enpro_direction, Enpro_amount, Enpro_price, GasWizard_direction, GasWizard_amount, GasWizard_price):
     msg_header_params = [
             {
                 "type": "text",

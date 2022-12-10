@@ -100,35 +100,35 @@ def getPrediction():
         return((False,[]))
 
 
-def sendNotification(message, tn_username, tn_sid, tn_csrf):
-    import jsonController
-    import random
-    import time
-    import TextNow
-    numbers = jsonController.readUsers()
+# def sendNotification(message, tn_username, tn_sid, tn_csrf):
+#     import jsonController
+#     import random
+#     import time
+#     import TextNow
+#     numbers = jsonController.readUsers()
 
-    #Get message
-    data, tomorrow = jsonController.checkPrediction(readData=True)
-    tomorrowDate = datetime.datetime.strptime(tomorrow, "%Y%m%d")
-    message = ""
+#     #Get message
+#     data, tomorrow = jsonController.checkPrediction(readData=True)
+#     tomorrowDate = datetime.datetime.strptime(tomorrow, "%Y%m%d")
+#     message = ""
 
-    for site in data[tomorrow]:
-        direction = data[tomorrow][site]["direction"]
-        amount = str(data[tomorrow][site]["amount"])
-        price = str(data[tomorrow][site]["price"])
-        if direction == "STAYS":
-            message = message + site + ": " + direction + " at " + price + "¢/L. "
-        else:
-            message = message + site + ": " + direction + " by " + amount + " to " + price + "¢/L. "
+#     for site in data[tomorrow]:
+#         direction = data[tomorrow][site]["direction"]
+#         amount = str(data[tomorrow][site]["amount"])
+#         price = str(data[tomorrow][site]["price"])
+#         if direction == "STAYS":
+#             message = message + site + ": " + direction + " at " + price + "¢/L. "
+#         else:
+#             message = message + site + ": " + direction + " by " + amount + " to " + price + "¢/L. "
 
-    if message == "":
-        message = "No prediction found for " + tomorrowDate.strftime("%b %d")
-    else:
-        message = "Gas Prediction - " + tomorrowDate.strftime("%b %d") + ". " + message
+#     if message == "":
+#         message = "No prediction found for " + tomorrowDate.strftime("%b %d")
+#     else:
+#         message = "Gas Prediction - " + tomorrowDate.strftime("%b %d") + ". " + message
     
-    for number in numbers:
-        time.sleep(random.randint(5,15))
-        TextNow.send_sms(number, message, tn_username, tn_sid, tn_csrf)
+#     for number in numbers:
+#         time.sleep(random.randint(5,15))
+#         TextNow.send_sms(number, message, tn_username, tn_sid, tn_csrf)
 
 if __name__ == "__main__":
     status, content = getWebsite()
