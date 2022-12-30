@@ -54,9 +54,12 @@ def readPrediction():
         return("Can't read json")
 
 def badNumber(number):
-    if len(number) != 10:
-        return True
-    return False
+    if number[:2] == "+1": # including +1
+        if len(number) != 12:
+            return False
+    elif len(number) != 10:
+        return False
+    return True
 
 def addUser(number):
 
