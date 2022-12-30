@@ -56,10 +56,10 @@ def readPrediction():
 def badNumber(number):
     if number[:2] == "+1": # including +1
         if len(number) != 12:
-            return False
+            return True
     elif len(number) != 10:
-        return False
-    return True
+        return True
+    return False
 
 def addUser(number):
 
@@ -119,3 +119,5 @@ def deleteUser(number):
         return True
     except:
         return False
+
+print(addUser("+14165707278"))
