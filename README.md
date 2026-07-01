@@ -27,7 +27,7 @@ Follow these steps to build and run the service:
 2.  **Build and Run the Service:**
     This command builds the Docker image (if necessary) and starts the service in detached mode (`-d`).
     ```bash
-    sudo docker compose up --build -d
+    sudo docker compose up --build --no-cache -d
     ```
 
 3.  **View Logs and Status:**
