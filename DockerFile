@@ -1,0 +1,19 @@
+FROM python:3.12
+
+WORKDIR /app
+
+# Copy requirements.txt into the container
+COPY requirements.txt .
+
+# Create and activate the virtual environment
+RUN python3 -m venv venv
+ENV VIRTUAL_ENV=/app/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Install dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+WORKDIR /app/gas_price_notification
+EXPOSE 5000
+# Run the application
+CMD ["python3", "server.py"]

@@ -1,0 +1,18 @@
+services:
+  gas_notifier:
+    build: . 
+    
+    # Defines the name of the container instance
+    container_name: gas_price_container
+    
+    # Maps port 5000 on the host machine to port 5000 inside the container
+    ports:
+      - "5000:5000"
+      
+    # Mounts the current directory (where your code is) into the container 
+    # at the path specified by the original run command.
+    volumes:
+      - .:/app/gas_price_notification
+      
+    # Optional: If your application needs to restart if it crashes
+    restart: unless-stopped 
