@@ -36,8 +36,22 @@ tasker_join_api = os.getenv('TASKER_JOIN_API')
 tasker_join_device = os.getenv('TASKER_JOIN_DEVICE')
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG,  # Set logging level
+# Set logging level to INFO for general API activity, DEBUG for detailed internal operations
+logging.basicConfig(level=logging.INFO,  # Changed from DEBUG to INFO for cleaner general logs
                     format='%(asctime)s - %(levelname)s - %(message)s')
+
+# --- Request Logging Middleware ---
+@app.before_request
+def log_request_info():
+    """Logs details of every incoming API request."""
+    # Use UTC or a defined timezone for standardized logging across services
+    timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    
+    method = request.method
+    path = request.path
+    
+    # Log the request method, path, and timestamp
+    logging.info(f"--- API Request Received | Time: {timestamp} | Method: {method} | Path: {path} ---")
 
 
 # --- Authorization Decorator & Helper ---
@@ -75,11 +89,10 @@ def require_auth(f):
         provided_key_match = valid_key_from_request()
         
         if not provided_key_match:
-            logging.warning("Unauthorized access attempt detected.")
+            logging.warning(f"Unauthorized access attempt detected on path: {request.path}")
             return jsonify({"error": "Unauthorized. Invalid or missing API Key."}), 401
         
         # Pass the validated key to the decorated function if necessary (optional)
-        # For simplicity here, we just pass the request along if authorized.
         return f(*args, **kwargs)
     return decorated_function
 
@@ -106,7 +119,7 @@ def getGasPrediction():
         force = "False"
         
     if hourisbetween(9, 21) or force == "True":
-        print("Updating Prediction")
+        logging.info("Triggering prediction update job.")
         try:
             result = gasWizard.getPrediction()
             if result and result[0]:
@@ -125,7 +138,7 @@ def getGasPrediction():
 
 @app.route('/')
 def sendPrediction():
-    print("Sending Prediction")
+    logging.info("Executing prediction message generation.")
     try:
         data, tomorrow = jsonController.checkPrediction(readData=True)
         tomorrowDate = datetime.datetime.strptime(tomorrow, "%Y%m%d")
@@ -159,14 +172,13 @@ def manageUsers():
     content_type = request.headers.get('Content-Type')
     
     if content_type != 'application/json':
-        logging.warning("User route accessed without application/json content type.")
+        logging.warning(f"User route accessed without application/json content type. Path: {request.path}")
         return jsonify({"error": "Unsupported Media Type"}), 415
 
     try:
         reqJson = request.get_json()
     except Exception:
         return jsonify({"error": "Invalid JSON payload"}), 400
-
 
     if request.method == 'GET' or request.method == 'PUT':
         # print("Find Users")
@@ -192,7 +204,7 @@ def manageUsers():
                 taskerJoinSMS.sendSMS(tasker_join_api, tasker_join_device, number, sms_prediction)
                 return jsonify({"status": "Successful", "message": "User added and SMS sent"})
             except Exception as e:
-                logging.error(f"SMS sending failed for new user: {e}")
+                logging.error(f"SMS sending failed for new user: {e} on path {request.path}")
                 return jsonify({"status": "Failed", "message": "User added, but SMS failed to send."}), 500
         else:
             taskerJoinSMS.sendSMS(tasker_join_api, tasker_join_device, number, "Something went wrong. Please contact James")
@@ -220,6 +232,7 @@ def manageUsers():
 def sendSMS_job(force=False, number=None, mark_sent=True):
     # Check if the time window allows sending (or if forced)
     if hourisbetween(13, 21) or force:
+        logging.info("Starting SMS broadcast job execution.")
         try:
             # Call the route function to generate the message content
             message = sendPrediction()
@@ -276,10 +289,13 @@ def sendSMS_job(force=False, number=None, mark_sent=True):
                 except Exception as e:
                     logging.error(f"Failed to write to gasPredictionMessage.txt: {e}")
                     
+            logging.info("SMS broadcast job finished successfully.")
             return("Successful")
         else:
+            logging.info("SMS broadcast skipped: Message content has not changed.")
             return ""
     else:
+        logging.info("SMS broadcast skipped: Outside scheduled time window.")
         return ""
 
 
@@ -298,9 +314,12 @@ def sendSMS_route():
     number = request.args.get('number')
 
     try:
-        return sendSMS_job(force=force, number=number, mark_sent=False)
+        result = sendSMS_job(force=force, number=number, mark_sent=False)
+        if result == "Successful":
+            return jsonify({"status": "success", "message": "SMS job executed successfully."}), 200
+        return jsonify({"status": "warning", "message": f"SMS job finished with status: {result}"}), 200
     except Exception as e:
-        logging.error(f"Error executing manual SMS route: {e}")
+        logging.error(f"Error executing manual SMS route on path {request.path}: {e}", exc_info=True)
         return jsonify({"error": "Failed to execute manual SMS job."}), 500
 
 
@@ -308,8 +327,9 @@ def sendSMS_route():
 
 @app.errorhandler(Exception)
 def handle_exception(e):
-    # Log the exception
-    logging.exception("An unhandled exception occurred:")  # Logs traceback
+    # Log the exception with full context
+    logging.exception(f"An unhandled exception occurred on path {request.path} ({request.method}):")
+    
     # Return a JSON response with the error message
     response = {
         "error": str(e),
@@ -320,7 +340,8 @@ def handle_exception(e):
 
 @app.errorhandler(404)
 def path_not_found(e):
-    print("Someone tried a weird route: " + str(request.path))
+    # Log the 404 with context
+    logging.warning(f"404 Not Found attempt on path: {request.path} ({request.method})")
     return jsonify({"error": "Not Found"}), 404
 
 
@@ -330,6 +351,9 @@ scheduler.start()
 if __name__ == '__main__':
     args = parser.parse_args()
 
+    print("=====================================================")
     print("Starting Flask Server...")
-    print("Listening on " + listenOn + ":" + str(args.port))
+    print(f"Logging Level: INFO (API Requests) / ERROR (Operational Failures)")
+    print(f"Listening on {listenOn}:{args.port}")
+    print("=====================================================")
     serve(app, host=listenOn, port=int(args.port))
